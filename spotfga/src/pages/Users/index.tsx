@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Container } from './styles';
+import { Container, Content, Button } from './styles';
 
 import Header from '../../components/Header';
 
@@ -9,7 +9,14 @@ const Users: React.FC = () => {
     <>
       <Header />
       <Container>
-        <h1>Users</h1>
+        <Content>
+          <Button>
+            <h1>User 1</h1>
+          </Button>
+          <Button>
+            <h1>User 2</h1>
+          </Button>
+        </Content>
       </Container>
     </>
   );

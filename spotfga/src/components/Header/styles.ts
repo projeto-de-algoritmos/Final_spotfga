@@ -16,7 +16,7 @@ export const Container = styled.div`
   align-items: center;
 `;
 
-export const ButtonBack = styled.button`
+export const Button = styled.button`
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -24,6 +24,10 @@ export const ButtonBack = styled.button`
   border: none;
   outline: none;
   cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   svg {
     fill: #fff;
