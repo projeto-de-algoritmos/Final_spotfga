@@ -1,8 +1,4 @@
-interface IUser {
-  id: number;
-  nome: string;
-  musics: string[];
-}
+import IUser from './IUser';
 
 const userNodes: IUser[] = [];
 const adjListUsers = new Map();
@@ -31,6 +27,12 @@ addUser('Murilo');
 addUser('Gabriel');
 userNodes.forEach(addNode);
 addEdge(userNodes[0], userNodes[1]);
+userNodes[0].musics.push('Think Of My Affection');
+userNodes[1].musics.push('Stars');
+userNodes[1].musics.push('Think Of My Affection');
+userNodes[0].musics.push('Remember My Tomorrow');
+userNodes[0].musics.sort();
+userNodes[1].musics.sort();
 const graph = {
   adjListUsers,
   userNodes,
