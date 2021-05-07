@@ -1,8 +1,4 @@
-interface IUser {
-  id: number;
-  nome: string;
-  musics: string[];
-}
+import IUser from './IUser';
 
 const userNodes: IUser[] = [];
 const adjListUsers = new Map();
