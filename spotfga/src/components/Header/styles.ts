@@ -1,3 +1,4 @@
+import { Form } from '@unform/web';
 import styled from 'styled-components';
 
 export const Container = styled.div`
@@ -14,6 +15,7 @@ export const Container = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  margin-bottom: 50px;
 `;
 
 export const Button = styled.button`
@@ -36,4 +38,12 @@ export const Button = styled.button`
   &:hover {
     background-color: #ffffff24;
   }
+`;
+
+export const StyledForm = styled(Form)`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;

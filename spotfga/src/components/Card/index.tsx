@@ -1,17 +1,20 @@
-import React, { ButtonHTMLAttributes } from 'react';
+import React from 'react';
 
-import { Container } from './styles';
+import { IoMdPerson } from 'react-icons/io';
 
-interface IProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  isList?: boolean;
-}
+import { Container, CardPicture, CardData } from './styles';
 
-const Card: React.FC<IProps> = ({ isList = false, ...rest }) => {
+const Card: React.FC = () => {
   return (
-    <Container isList {...rest}>
-      <h1>Gabriel Paiva</h1>
-      <p>Músicas ouvidas: 5</p>
-      <p>Amigos: 2</p>
+    <Container>
+      <CardPicture>
+        <IoMdPerson size={50} />
+      </CardPicture>
+      <CardData>
+        <h1>Gabriel Paiva</h1>
+        <p>Músicas ouvidas: 5</p>
+        <p>Amigos: 2</p>
+      </CardData>
     </Container>
   );
 };

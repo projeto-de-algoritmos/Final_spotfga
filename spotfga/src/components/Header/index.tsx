@@ -8,8 +8,10 @@ import {
 } from 'react-icons/io';
 import { useHistory } from 'react-router-dom';
 
-import { Container, Button } from './styles';
+import { Container, Button, StyledForm } from './styles';
 
+import ButtonBorder from '../ButtonBorder';
+import Input from '../Input';
 import Modal from '../Modal';
 
 const Header: React.FC = () => {
@@ -33,7 +35,12 @@ const Header: React.FC = () => {
         >
           <IoMdArrowBack size={30} />
         </Button>
-        <Button style={{ marginRight: 10 }}>
+        <Button
+          style={{ marginRight: 10 }}
+          onClick={() => {
+            setModalUser(true);
+          }}
+        >
           <IoMdPersonAdd size={30} />
         </Button>
         <Button>
@@ -42,6 +49,16 @@ const Header: React.FC = () => {
       </Container>
       <Modal modalVisible={modalUser} setModalVisible={setModalUser}>
         <h1>Cadastrar usuário</h1>
+        <StyledForm ref={userFormRef} onSubmit={HandleUserSubmit}>
+          <Input name="username" />
+          <ButtonBorder
+            onClick={() => {
+              userFormRef.current?.submitForm();
+            }}
+          >
+            Cadastrar
+          </ButtonBorder>
+        </StyledForm>
       </Modal>
     </>
   );

@@ -35,7 +35,7 @@ export const BackdropContainer = styled.div<IBackdropContainer>`
 
 export const Container = styled.div<IAlignModal>`
   position: relative;
-  max-width: 50rem;
+  max-width: 500px;
   width: 100%;
   min-height: 25%;
   height: auto;
@@ -49,6 +49,7 @@ export const Container = styled.div<IAlignModal>`
   justify-content: space-around;
   align-items: center;
   z-index: 5;
+  color: #000;
 
   ${(props) =>
     props.alignModal === 'flex-end' &&
