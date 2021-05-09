@@ -20,15 +20,34 @@ const User: React.FC = () => {
   const { id } = useParams<IParams>();
   const navigation = useHistory();
 
-  const { graph } = useContext(UserCtx);
+  const { graph, setGraph } = useContext(UserCtx);
   const [userSuggestion, setUserSuggestion] = useState<IUser[]>([]);
 
   const user = graph.nodes.filter((iuser) => iuser.id === Number(id))[0];
 
   const handleAddFriend = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, suggestion) => {
       e.stopPropagation();
+
+      const newEdges = new Map([...graph.edges]);
+      newEdges.get(user.id)?.push(suggestion);
+      newEdges.get(suggestion.id)?.push(user);
+
+      setGraph({ nodes: graph.nodes, edges: newEdges });
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [user],
+  );
+
+  const handleAddMusic = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, music) => {
+      e.stopPropagation();
+
+      graph.nodes.filter((node) => node.id === user.id)[0].musics.push(music);
+
+      setGraph({ nodes: graph.nodes, edges: graph.edges });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
@@ -52,7 +71,7 @@ const User: React.FC = () => {
     result = result.sort((a, b) => a.lcs - b.lcs).reverse();
     result = result.slice(0, 4);
     setUserSuggestion(result);
-  }, []);
+  }, [graph.edges, graph.nodes, user.id, user.musics]);
 
   return (
     <Container>
@@ -77,13 +96,21 @@ const User: React.FC = () => {
               (com base nas músicas que você ouviu)
             </span>
           </Subtitle>
+          {userSuggestion.length === 0 && (
+            <Subtitle>Você não tem sugestões de amizade!</Subtitle>
+          )}
           {userSuggestion.map((suggestion) => (
-            <Button key={suggestion.id}>
+            <Button
+              key={suggestion.id}
+              onClick={() => {
+                navigation.push(`/user/${suggestion.id}`);
+              }}
+            >
               <Subtitle>{suggestion.nome}</Subtitle>
               <ButtonHeader
                 style={{ marginRight: 10 }}
                 onClick={(e) => {
-                  handleAddFriend(e);
+                  handleAddFriend(e, suggestion);
                 }}
               >
                 <IoMdPersonAdd size={30} />
@@ -109,7 +136,7 @@ const User: React.FC = () => {
             <ButtonHeader
               style={{ marginRight: 10 }}
               onClick={(e) => {
-                handleAddFriend(e);
+                handleAddMusic(e, 'Burguesinha');
               }}
             >
               <IoIosPlayCircle size={36} />
