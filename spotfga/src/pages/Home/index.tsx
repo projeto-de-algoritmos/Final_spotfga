@@ -1,25 +1,12 @@
-import React, { useContext, useEffect } from 'react';
+import React from 'react';
 
 import { IoMdPerson, IoIosMusicalNotes } from 'react-icons/io';
 import { useHistory } from 'react-router-dom';
 
 import { Container, Content, Card } from './styles';
 
-import { UserCtx } from '../../context/UserCtx';
-import { mockEdges } from '../../mock/mockEdges';
-import { mockNodes } from '../../mock/mockNodes';
-
 const Home: React.FC = () => {
   const navigation = useHistory();
-
-  const { setGraph } = useContext(UserCtx);
-
-  useEffect(() => {
-    setGraph({
-      nodes: mockNodes,
-      edges: mockEdges,
-    });
-  }, [setGraph]);
 
   return (
     <>
@@ -32,7 +19,11 @@ const Home: React.FC = () => {
           >
             <IoMdPerson size={80} />
           </Card>
-          <Card>
+          <Card
+            onClick={() => {
+              navigation.push('musics');
+            }}
+          >
             <IoIosMusicalNotes size={80} />
           </Card>
         </Content>

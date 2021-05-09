@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { IoMdArrowBack, IoIosMusicalNotes } from 'react-icons/io';
+import { IoMdArrowBack } from 'react-icons/io';
 import { useHistory } from 'react-router-dom';
 
 import { Container, Button } from './styles';
@@ -20,9 +20,6 @@ const Header: React.FC = ({ children }) => {
           <IoMdArrowBack size={30} />
         </Button>
         {children}
-        <Button>
-          <IoIosMusicalNotes size={30} />
-        </Button>
       </Container>
     </>
   );
