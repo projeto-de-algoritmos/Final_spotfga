@@ -77,3 +77,10 @@ export const StyledForm = styled(Form)`
   justify-content: center;
   align-items: center;
 `;
+
+export const Line = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;

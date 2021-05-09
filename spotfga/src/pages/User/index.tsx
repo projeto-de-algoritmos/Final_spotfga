@@ -1,12 +1,31 @@
-import React, { useContext, useCallback, useEffect, useState } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, {
+  useContext,
+  useCallback,
+  useEffect,
+  useState,
+  useRef,
+} from 'react';
 
+import { FormHandles } from '@unform/core';
 import { IoMdPersonAdd, IoIosPlayCircle } from 'react-icons/io';
 import { useParams, useHistory } from 'react-router-dom';
 
-import { Container, Content, Button, Sugestion, ButtonHeader } from './styles';
+import {
+  Container,
+  Content,
+  Button,
+  Sugestion,
+  ButtonHeader,
+  StyledForm,
+  Line,
+} from './styles';
 
+import ButtonBorder from '../../components/ButtonBorder';
 import Card from '../../components/Card';
 import Header from '../../components/Header';
+import InputRadio from '../../components/InputRadio';
+import Modal from '../../components/Modal';
 import { UserCtx } from '../../context/UserCtx';
 import bfs from '../../utils/bfs';
 import { Title, Subtitle } from '../../utils/fonts';
@@ -17,13 +36,21 @@ interface IParams {
   id: string;
 }
 
+interface OptionsProps {
+  id: number | string | any;
+  label: string;
+}
+
 const User: React.FC = () => {
   const { id } = useParams<IParams>();
   const navigation = useHistory();
+  const usersFormRef = useRef<FormHandles>(null);
 
   const { graph, setGraph } = useContext(UserCtx);
   const [userSuggestion, setUserSuggestion] = useState<IUser[]>([]);
   const [musicsSuggestion, setMusicsSuggestion] = useState<string[]>([]);
+  const [modalUsers, setModalUsers] = useState(false);
+  const [friendsOptions, setFriendsOptions] = useState<OptionsProps[]>([]);
 
   const user = graph.nodes.filter((iuser) => iuser.id === Number(id))[0];
 
@@ -52,6 +79,30 @@ const User: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
+
+  const handleUserForm = useCallback((data) => {
+    const newEdges = new Map([...graph.edges]);
+    newEdges.get(user.id)?.push(graph.nodes[data.userCheck - 1]);
+    newEdges.get(graph.nodes[data.userCheck - 1].id)?.push(user);
+
+    setGraph({ nodes: graph.nodes, edges: newEdges });
+    setModalUsers(false);
+    usersFormRef.current?.reset();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const chooseFriendsOptions = useCallback(() => {
+    const friends = graph.edges.get(user.id);
+    const friendsId = friends?.map((friend) => friend.id);
+    const allUsers = graph.nodes
+      .filter((nonFriend) => {
+        return nonFriend.id !== user.id && !friendsId?.includes(nonFriend.id);
+      })
+      .map((userNode) => {
+        return { id: userNode.id, label: userNode.nome };
+      });
+    setFriendsOptions(allUsers);
+  }, [graph.edges, graph.nodes, user.id]);
 
   const suggestFriends = useCallback((): void => {
     const friends = graph.edges.get(user.id);
@@ -104,84 +155,117 @@ const User: React.FC = () => {
   }, [graph, user]);
 
   useEffect(() => {
+    chooseFriendsOptions();
     suggestFriends();
     suggestMusic();
-  }, [suggestFriends, suggestMusic]);
+  }, [suggestFriends, suggestMusic, chooseFriendsOptions]);
 
   return (
-    <Container>
-      <Header />
-      <Content>
-        <Card user={user} />
-        <Title>Seus amigos:</Title>
-        {graph.edges.get(Number(id))?.map((friend) => (
-          <Button
-            key={friend.id}
-            onClick={() => {
-              navigation.push(`/user/${friend.id}`);
-            }}
-          >
-            <Subtitle>{friend.nome}</Subtitle>
-          </Button>
-        ))}
-        <Sugestion>
-          <Subtitle style={{ marginBottom: 10 }}>
-            Amigos sugeridos:{' '}
-            <span style={{ fontSize: 10 }}>
-              (com base nas músicas que você ouviu)
-            </span>
-          </Subtitle>
-          {userSuggestion.length === 0 && (
-            <Subtitle>Você não tem sugestões de amizade!</Subtitle>
-          )}
-          {userSuggestion.map((suggestion) => (
-            <Button
-              key={suggestion.id}
+    <>
+      <Container>
+        <Header />
+        <Content>
+          <Card user={user} />
+          <Line>
+            <Title>Seus amigos:</Title>
+            <ButtonHeader
+              style={{ marginRight: 10 }}
               onClick={() => {
-                navigation.push(`/user/${suggestion.id}`);
+                setModalUsers(true);
               }}
             >
-              <Subtitle>{suggestion.nome}</Subtitle>
-              <ButtonHeader
-                style={{ marginRight: 10 }}
-                onClick={(e) => {
-                  handleAddFriend(e, suggestion);
-                }}
-              >
-                <IoMdPersonAdd size={30} />
-              </ButtonHeader>
+              <IoMdPersonAdd size={30} />
+            </ButtonHeader>
+          </Line>
+          {graph.edges.get(Number(id))?.map((friend) => (
+            <Button
+              key={friend.id}
+              onClick={() => {
+                navigation.push(`/user/${friend.id}`);
+              }}
+            >
+              <Subtitle>{friend.nome}</Subtitle>
             </Button>
           ))}
-        </Sugestion>
-        <Title>Suas musicas:</Title>
-        {user?.musics.map((music) => (
-          <Button key={music} style={{ cursor: 'default' }}>
-            <Subtitle>{music}</Subtitle>
-          </Button>
-        ))}
-        <Sugestion>
-          <Subtitle style={{ marginBottom: 10 }}>
-            Músicas sugeridas:{' '}
-            <span style={{ fontSize: 10 }}>
-              (com base nas suas músicas e de seus amigos)
-            </span>
-          </Subtitle>
-          {musicsSuggestion.map((music) => (
+          <Sugestion>
+            <Subtitle style={{ marginBottom: 10 }}>
+              Amigos sugeridos:{' '}
+              <span style={{ fontSize: 10 }}>
+                (com base nas músicas que você ouviu)
+              </span>
+            </Subtitle>
+            {userSuggestion.length === 0 && (
+              <Subtitle>Você não tem sugestões de amizade!</Subtitle>
+            )}
+            {userSuggestion.map((suggestion) => (
+              <Button
+                key={suggestion.id}
+                onClick={() => {
+                  navigation.push(`/user/${suggestion.id}`);
+                }}
+              >
+                <Subtitle>{suggestion.nome}</Subtitle>
+                <ButtonHeader
+                  style={{ marginRight: 10 }}
+                  onClick={(e) => {
+                    handleAddFriend(e, suggestion);
+                  }}
+                >
+                  <IoMdPersonAdd size={30} />
+                </ButtonHeader>
+              </Button>
+            ))}
+          </Sugestion>
+          <Title>Suas musicas:</Title>
+          {user?.musics.map((music) => (
             <Button key={music} style={{ cursor: 'default' }}>
               <Subtitle>{music}</Subtitle>
-              <ButtonHeader
-                style={{ marginRight: 10 }}
-                onClick={(e) => {
-                  handleAddMusic(e, music);
-                }}
-              >
-                <IoIosPlayCircle size={36} />
-              </ButtonHeader>
             </Button>
           ))}
-        </Sugestion>
-      </Content>
-    </Container>
+          <Sugestion>
+            <Subtitle style={{ marginBottom: 10 }}>
+              Músicas sugeridas:{' '}
+              <span style={{ fontSize: 10 }}>
+                (com base nas suas músicas e de seus amigos)
+              </span>
+            </Subtitle>
+            {musicsSuggestion.length === 0 && (
+              <Subtitle>Você não tem sugestões de música!</Subtitle>
+            )}
+            {musicsSuggestion.map((music) => (
+              <Button key={music} style={{ cursor: 'default' }}>
+                <Subtitle>{music}</Subtitle>
+                <ButtonHeader
+                  style={{ marginRight: 10 }}
+                  onClick={(e) => {
+                    handleAddMusic(e, music);
+                  }}
+                >
+                  <IoIosPlayCircle size={36} />
+                </ButtonHeader>
+              </Button>
+            ))}
+          </Sugestion>
+        </Content>
+      </Container>
+
+      <Modal modalVisible={modalUsers} setModalVisible={setModalUsers}>
+        <Title style={{ color: '#6f4691', marginBottom: 30 }}>
+          Adicionar amigo
+        </Title>
+        <StyledForm ref={usersFormRef} onSubmit={handleUserForm}>
+          <InputRadio name="userCheck" options={friendsOptions} />
+          <ButtonBorder
+            type="button"
+            onClick={() => {
+              usersFormRef.current?.submitForm();
+            }}
+          >
+            Adicionar
+          </ButtonBorder>
+        </StyledForm>
+      </Modal>
+    </>
   );
 };
 
