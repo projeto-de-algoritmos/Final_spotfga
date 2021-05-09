@@ -1,17 +1,27 @@
 export const mockNodes = [
   {
     id: 1,
-    nome: 'Elision Kadeus',
-    musics: ['Back In Black', 'Mr. Sandman'],
+    nome: 'Steven Tyler',
+    musics: ['Dream On', 'Crazy', 'Sweet Emotion'],
   },
   {
     id: 2,
-    nome: 'Murilo Gomes',
-    musics: ['Gangnam Style', 'I Wanna Love You'],
+    nome: 'Tom Hamilton',
+    musics: ['Dream On', 'Pink'],
   },
   {
     id: 3,
-    nome: 'Gabriel Paiva',
-    musics: ['I Wanna Love You', 'Vagalumes'],
+    nome: 'Joe Perry',
+    musics: ['Dream On', 'Hole In My Soul', 'Amazing'],
+  },
+  {
+    id: 4,
+    nome: 'Ozzy Osbourne',
+    musics: ['Dreamer', 'Black Sabbath', 'Crazy Train'],
+  },
+  {
+    id: 5,
+    nome: 'David Bowie',
+    musics: ['Crazy Train', 'Changes', 'Starman'],
   },
 ];

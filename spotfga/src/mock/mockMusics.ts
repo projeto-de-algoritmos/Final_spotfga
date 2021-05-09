@@ -1,7 +1,13 @@
 export const mockMusics = [
-  'I Wanna Love You',
-  'Burguesinha',
-  'Vagalumes',
-  'Back in Black',
-  'Amiga da minha mulher',
+  'Dream On',
+  'Crazy',
+  'Sweet Emotion',
+  'Pink',
+  'Hole In My Soul',
+  'Amazing',
+  'Dreamer',
+  'Black Sabbath',
+  'Crazy Train',
+  'Changes',
+  'Starman',
 ];
