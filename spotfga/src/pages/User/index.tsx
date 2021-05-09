@@ -45,12 +45,15 @@ const User: React.FC = () => {
   const { id } = useParams<IParams>();
   const navigation = useHistory();
   const usersFormRef = useRef<FormHandles>(null);
+  const musicsFormRef = useRef<FormHandles>(null);
 
-  const { graph, setGraph } = useContext(UserCtx);
+  const { graph, setGraph, musics } = useContext(UserCtx);
   const [userSuggestion, setUserSuggestion] = useState<IUser[]>([]);
   const [musicsSuggestion, setMusicsSuggestion] = useState<string[]>([]);
   const [modalUsers, setModalUsers] = useState(false);
+  const [modalMusics, setModalMusics] = useState(false);
   const [friendsOptions, setFriendsOptions] = useState<OptionsProps[]>([]);
+  const [musicsOptions, setMusicsOptions] = useState<OptionsProps[]>([]);
 
   const user = graph.nodes.filter((iuser) => iuser.id === Number(id))[0];
 
@@ -91,6 +94,17 @@ const User: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleMusicForm = useCallback((data) => {
+    graph.nodes
+      .filter((node) => node.id === user.id)[0]
+      .musics.push(data.userCheck);
+
+    setGraph({ nodes: graph.nodes, edges: graph.edges });
+    setModalMusics(false);
+    musicsFormRef.current?.reset();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const chooseFriendsOptions = useCallback(() => {
     const friends = graph.edges.get(user.id);
     const friendsId = friends?.map((friend) => friend.id);
@@ -103,6 +117,15 @@ const User: React.FC = () => {
       });
     setFriendsOptions(allUsers);
   }, [graph.edges, graph.nodes, user.id]);
+
+  const chooseMusicsOptions = useCallback(() => {
+    const options = musics
+      .filter((music) => !user.musics.includes(music))
+      .map((music) => {
+        return { id: music, label: music };
+      });
+    setMusicsOptions(options);
+  }, [musics, user.musics]);
 
   const suggestFriends = useCallback((): void => {
     const friends = graph.edges.get(user.id);
@@ -145,10 +168,10 @@ const User: React.FC = () => {
     let i = 0;
     while (result.size < 4) {
       if (i === lcsArray.length) break;
-      const musics = lcsArray[i].musics.filter(
+      const filteredMusics = lcsArray[i].musics.filter(
         (music) => !user.musics.includes(music),
       );
-      musics.forEach((music) => result.add(music));
+      filteredMusics.forEach((music) => result.add(music));
       i += 1;
     }
     setMusicsSuggestion([...result]);
@@ -156,9 +179,10 @@ const User: React.FC = () => {
 
   useEffect(() => {
     chooseFriendsOptions();
+    chooseMusicsOptions();
     suggestFriends();
     suggestMusic();
-  }, [suggestFriends, suggestMusic, chooseFriendsOptions]);
+  }, [suggestFriends, suggestMusic, chooseFriendsOptions, chooseMusicsOptions]);
 
   return (
     <>
@@ -216,7 +240,17 @@ const User: React.FC = () => {
               </Button>
             ))}
           </Sugestion>
-          <Title>Suas musicas:</Title>
+          <Line>
+            <Title>Suas musicas:</Title>
+            <ButtonHeader
+              style={{ marginRight: 10 }}
+              onClick={() => {
+                setModalMusics(true);
+              }}
+            >
+              <IoIosPlayCircle size={36} />
+            </ButtonHeader>
+          </Line>
           {user?.musics.map((music) => (
             <Button key={music} style={{ cursor: 'default' }}>
               <Subtitle>{music}</Subtitle>
@@ -249,7 +283,11 @@ const User: React.FC = () => {
         </Content>
       </Container>
 
-      <Modal modalVisible={modalUsers} setModalVisible={setModalUsers}>
+      <Modal
+        modalVisible={modalUsers}
+        setModalVisible={setModalUsers}
+        scrollView
+      >
         <Title style={{ color: '#6f4691', marginBottom: 30 }}>
           Adicionar amigo
         </Title>
@@ -259,6 +297,27 @@ const User: React.FC = () => {
             type="button"
             onClick={() => {
               usersFormRef.current?.submitForm();
+            }}
+          >
+            Adicionar
+          </ButtonBorder>
+        </StyledForm>
+      </Modal>
+
+      <Modal
+        modalVisible={modalMusics}
+        setModalVisible={setModalMusics}
+        scrollView
+      >
+        <Title style={{ color: '#6f4691', marginBottom: 30 }}>
+          Adicionar música
+        </Title>
+        <StyledForm ref={musicsFormRef} onSubmit={handleMusicForm}>
+          <InputRadio name="userCheck" options={musicsOptions} />
+          <ButtonBorder
+            type="button"
+            onClick={() => {
+              musicsFormRef.current?.submitForm();
             }}
           >
             Adicionar
