@@ -9,15 +9,15 @@ interface ContainerProps {
 }
 
 export const Container = styled.div<ContainerProps>`
-  /* max-width: 294px; */
+  max-width: 294px;
   position: relative;
   width: 100%;
   height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 7.4rem;
-  border: 2px solid #ff9a00;
+  border-radius: 74px;
+  border: 2px solid #8755ad;
   margin-bottom: 20px;
 
   ${(props) =>
@@ -54,26 +54,17 @@ export const Container = styled.div<ContainerProps>`
     background: transparent;
     border: 0;
     color: #000000;
-    font-size: 1.6rem;
     padding: 5px 20px;
-
-    ::placeholder {
-      color: #000000;
-      text-align: center;
-      font-family: 'Poppins';
-      font-weight: 700;
-      font-size: 1.6rem;
-    }
-
-    /* &::placeholder {
-      color: $props => props.placeholderColor;
-    } */
+    outline: none;
+    font-family: 'Montserrat';
+    font-size: 16px;
+    font-weight: 500;
   }
 `;
 
 export const Error = styled(Tooltip)`
-  height: 2rem;
-  margin-right: 0.5rem;
+  height: 20px;
+  margin-right: 5px;
 
   svg {
     margin: 0;

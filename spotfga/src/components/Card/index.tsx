@@ -1,19 +1,29 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { IoMdPerson } from 'react-icons/io';
 
 import { Container, CardPicture, CardData } from './styles';
 
-const Card: React.FC = () => {
+import { UserCtx } from '../../context/UserCtx';
+import { Title, Subtitle } from '../../utils/fonts';
+import IUser from '../../utils/IUser';
+
+interface IProps {
+  user: IUser;
+}
+
+const Card: React.FC<IProps> = ({ user }) => {
+  const { graph } = useContext(UserCtx);
+
   return (
     <Container>
       <CardPicture>
         <IoMdPerson size={50} />
       </CardPicture>
       <CardData>
-        <h1>Gabriel Paiva</h1>
-        <p>Músicas ouvidas: 5</p>
-        <p>Amigos: 2</p>
+        <Title>{user?.nome}</Title>
+        <Subtitle>{`Músicas ouvidas: ${user?.musics.length}`}</Subtitle>
+        <Subtitle>{`Amigos: ${graph.edges.get(user?.id)?.length}`}</Subtitle>
       </CardData>
     </Container>
   );

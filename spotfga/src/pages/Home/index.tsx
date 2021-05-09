@@ -12,7 +12,7 @@ import { mockNodes } from '../../mock/mockNodes';
 const Home: React.FC = () => {
   const navigation = useHistory();
 
-  const { graph, setGraph } = useContext(UserCtx);
+  const { setGraph } = useContext(UserCtx);
 
   useEffect(() => {
     setGraph({

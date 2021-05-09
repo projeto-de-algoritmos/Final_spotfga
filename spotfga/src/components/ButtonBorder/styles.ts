@@ -5,22 +5,27 @@ interface ButtonProps {
 }
 
 export const Container = styled.button<ButtonProps>`
-  background: transparent;
-  border-width: 1;
-  border-radius: 20px;
-  border-color: #ff9a00;
+  background: #8755ad;
+  max-width: 294px;
+  border: 2px solid #8755ad;
+  border-radius: 74px;
   height: 40px;
   width: 100%;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem 3rem;
+  padding: 5px 30px;
+
+  &:hover {
+    background-color: #6f4691;
+    cursor: pointer;
+  }
 `;
 
 export const ButtonText = styled.p`
   color: #fff;
-  font-size: 16px;
-  font-family: 'Poppins';
-  font-weight: 500;
+  font-family: 'Montserrat';
+  font-size: 20px;
+  font-weight: 700;
   letter-spacing: 0.64px;
   align-items: center;
   display: flex;

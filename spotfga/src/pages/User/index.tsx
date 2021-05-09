@@ -7,6 +7,7 @@ import { Container, Content, Button } from './styles';
 import Card from '../../components/Card';
 import Header from '../../components/Header';
 import { UserCtx } from '../../context/UserCtx';
+import { Title, Subtitle } from '../../utils/fonts';
 
 interface IParams {
   id: string;
@@ -24,17 +25,22 @@ const User: React.FC = () => {
     <Container>
       <Header />
       <Content>
-        <Card />
-        <h1>Seus amigos:</h1>
+        <Card user={user} />
+        <Title>Seus amigos:</Title>
         {graph.edges.get(Number(id))?.map((friend) => (
-          <Button>
-            <h1>{friend.nome}</h1>
+          <Button
+            key={friend.id}
+            onClick={() => {
+              navigation.push(`/user/${friend.id}`);
+            }}
+          >
+            <Subtitle>{friend.nome}</Subtitle>
           </Button>
         ))}
-        <h1>Suas musicas:</h1>
+        <Title>Suas musicas:</Title>
         {user?.musics.map((music) => (
-          <Button>
-            <h1>{music}</h1>
+          <Button key={music} style={{ cursor: 'default' }}>
+            <Subtitle>{music}</Subtitle>
           </Button>
         ))}
       </Content>

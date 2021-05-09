@@ -22,9 +22,7 @@ const ButtonBorder: React.FC<ButtonProps> = ({
 }) => (
   <Container style={containerStyle} {...rest}>
     {icon}
-    <ButtonText
-      style={{ fontSize: textFontSize, color: textColor || '#ff9a00' }}
-    >
+    <ButtonText style={{ fontSize: textFontSize, color: textColor }}>
       {children}
     </ButtonText>
   </Container>
