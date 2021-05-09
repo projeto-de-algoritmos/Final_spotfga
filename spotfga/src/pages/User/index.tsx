@@ -8,6 +8,7 @@ import { Container, Content, Button, Sugestion, ButtonHeader } from './styles';
 import Card from '../../components/Card';
 import Header from '../../components/Header';
 import { UserCtx } from '../../context/UserCtx';
+import bfs from '../../utils/bfs';
 import { Title, Subtitle } from '../../utils/fonts';
 import IUser from '../../utils/IUser';
 import lcs from '../../utils/lcs';
@@ -22,6 +23,7 @@ const User: React.FC = () => {
 
   const { graph, setGraph } = useContext(UserCtx);
   const [userSuggestion, setUserSuggestion] = useState<IUser[]>([]);
+  const [musicsSuggestion, setMusicsSuggestion] = useState<string[]>([]);
 
   const user = graph.nodes.filter((iuser) => iuser.id === Number(id))[0];
 
@@ -51,7 +53,7 @@ const User: React.FC = () => {
     [],
   );
 
-  useEffect(() => {
+  const suggestFriends = useCallback((): void => {
     const friends = graph.edges.get(user.id);
     const friendsId = friends?.map((friend) => friend.id);
     const nonFriends = graph.nodes.filter((nonFriend) => {
@@ -72,6 +74,39 @@ const User: React.FC = () => {
     result = result.slice(0, 4);
     setUserSuggestion(result);
   }, [graph.edges, graph.nodes, user.id, user.musics]);
+
+  const suggestMusic = useCallback(() => {
+    const connections = bfs(user, graph);
+    let lcsArray = connections.map((connection) => {
+      const connectionUser = graph.nodes[connection - 1];
+      return {
+        ...connectionUser,
+        lcs: lcs(
+          user.musics,
+          connectionUser?.musics,
+          user.musics.length,
+          connectionUser?.musics.length,
+        ),
+      };
+    });
+    lcsArray = lcsArray.sort((a, b) => a.lcs - b.lcs).reverse();
+    const result = new Set<string>();
+    let i = 0;
+    while (result.size < 4) {
+      if (i === lcsArray.length) break;
+      const musics = lcsArray[i].musics.filter(
+        (music) => !user.musics.includes(music),
+      );
+      musics.forEach((music) => result.add(music));
+      i += 1;
+    }
+    setMusicsSuggestion([...result]);
+  }, [graph, user]);
+
+  useEffect(() => {
+    suggestFriends();
+    suggestMusic();
+  }, [suggestFriends, suggestMusic]);
 
   return (
     <Container>
@@ -131,17 +166,19 @@ const User: React.FC = () => {
               (com base nas suas músicas e de seus amigos)
             </span>
           </Subtitle>
-          <Button style={{ cursor: 'default' }}>
-            <Subtitle>Burguesinha</Subtitle>
-            <ButtonHeader
-              style={{ marginRight: 10 }}
-              onClick={(e) => {
-                handleAddMusic(e, 'Burguesinha');
-              }}
-            >
-              <IoIosPlayCircle size={36} />
-            </ButtonHeader>
-          </Button>
+          {musicsSuggestion.map((music) => (
+            <Button key={music} style={{ cursor: 'default' }}>
+              <Subtitle>{music}</Subtitle>
+              <ButtonHeader
+                style={{ marginRight: 10 }}
+                onClick={(e) => {
+                  handleAddMusic(e, music);
+                }}
+              >
+                <IoIosPlayCircle size={36} />
+              </ButtonHeader>
+            </Button>
+          ))}
         </Sugestion>
       </Content>
     </Container>

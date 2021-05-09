@@ -1,30 +1,27 @@
-import graph from './graph';
+import IGraph from './IGraph';
 import IUser from './IUser';
 
-const { adjListUsers, userNodes } = graph;
+const bfs = (start: IUser, graph: IGraph): Array<number> => {
+  const visited = new Array<number>();
 
-const bfs = (start: IUser): void => {
-  const visited = new Set();
+  const { edges } = graph;
 
   const queue = [start];
 
   while (queue.length > 0) {
     const user = queue.shift();
+    let connections;
+    if (user) connections = edges.get(user.id);
 
-    const connections = adjListUsers.get(user?.id);
-
-    connections.forEach((connection: IUser) => {
-      if (!visited.has(connection)) {
-        visited.add(connection);
+    connections?.forEach((connection: IUser) => {
+      if (!visited.includes(connection.id) && connection.id !== start.id) {
+        visited.push(connection.id);
         queue.push(connection);
-        if (connection.id === 0) {
-          console.log('BFS found Gabriel');
-        }
       }
     });
   }
-};
 
-bfs(userNodes[1]);
+  return visited;
+};
 
 export default bfs;
