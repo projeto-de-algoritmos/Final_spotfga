@@ -30,7 +30,8 @@ const lcs = (
   sizeTwo: number,
 ): number => {
   const memoization: number[][] = [];
-
+  arrayLeft = arrayLeft.sort();
+  arrayRight = arrayRight.sort();
   for (let i = 0; i < arrayLeft.length + 1; i += 1) {
     const aux: number[] = [];
     for (let j = 0; j < arrayRight.length + 1; j += 1) {
