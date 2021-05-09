@@ -1,6 +1,4 @@
-import graph from './graph';
-
-const lcs = (
+const lcsF = (
   arrayLeft: string[],
   arrayRight: string[],
   sizeOne: number,
@@ -15,29 +13,32 @@ const lcs = (
   }
   if (arrayLeft[sizeOne - 1] === arrayRight[sizeTwo - 1]) {
     memoization[sizeOne - 1][sizeTwo - 1] =
-      1 + lcs(arrayLeft, arrayRight, sizeOne - 1, sizeTwo - 1, memoization);
+      1 + lcsF(arrayLeft, arrayRight, sizeOne - 1, sizeTwo - 1, memoization);
     return memoization[sizeOne - 1][sizeTwo - 1];
   }
   memoization[sizeOne - 1][sizeTwo - 1] = Math.max(
-    lcs(arrayLeft, arrayRight, sizeOne, sizeTwo - 1, memoization),
-    lcs(arrayLeft, arrayRight, sizeOne - 1, sizeTwo, memoization),
+    lcsF(arrayLeft, arrayRight, sizeOne, sizeTwo - 1, memoization),
+    lcsF(arrayLeft, arrayRight, sizeOne - 1, sizeTwo, memoization),
   );
   return memoization[sizeOne - 1][sizeTwo - 1];
 };
 
-const memoization: number[][] = [];
-const arrayLeft: string[] = graph.userNodes[0].musics;
-const arrayRight: string[] = graph.userNodes[1].musics;
+const lcs = (
+  arrayLeft: string[],
+  arrayRight: string[],
+  sizeOne: number,
+  sizeTwo: number,
+): number => {
+  const memoization: number[][] = [];
 
-for (let i = 0; i < arrayLeft.length + 1; i += 1) {
-  const aux: number[] = [];
-  for (let j = 0; j < arrayRight.length + 1; j += 1) {
-    aux.push(-1);
+  for (let i = 0; i < arrayLeft.length + 1; i += 1) {
+    const aux: number[] = [];
+    for (let j = 0; j < arrayRight.length + 1; j += 1) {
+      aux.push(-1);
+    }
+    memoization.push(aux);
   }
-  memoization.push(aux);
-}
-console.log(
-  lcs(arrayLeft, arrayRight, arrayLeft.length, arrayRight.length, memoization),
-);
+  return lcsF(arrayLeft, arrayRight, sizeOne, sizeTwo, memoization);
+};
 
 export default lcs;

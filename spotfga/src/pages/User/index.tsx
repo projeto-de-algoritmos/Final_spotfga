@@ -1,4 +1,4 @@
-import React, { useContext, useCallback } from 'react';
+import React, { useContext, useCallback, useEffect, useState } from 'react';
 
 import { IoMdPersonAdd, IoIosPlayCircle } from 'react-icons/io';
 import { useParams, useHistory } from 'react-router-dom';
@@ -9,6 +9,8 @@ import Card from '../../components/Card';
 import Header from '../../components/Header';
 import { UserCtx } from '../../context/UserCtx';
 import { Title, Subtitle } from '../../utils/fonts';
+import IUser from '../../utils/IUser';
+import lcs from '../../utils/lcs';
 
 interface IParams {
   id: string;
@@ -19,6 +21,7 @@ const User: React.FC = () => {
   const navigation = useHistory();
 
   const { graph } = useContext(UserCtx);
+  const [userSuggestion, setUserSuggestion] = useState<IUser[]>([]);
 
   const user = graph.nodes.filter((iuser) => iuser.id === Number(id))[0];
 
@@ -28,6 +31,28 @@ const User: React.FC = () => {
     },
     [],
   );
+
+  useEffect(() => {
+    const friends = graph.edges.get(user.id);
+    const friendsId = friends?.map((friend) => friend.id);
+    const nonFriends = graph.nodes.filter((nonFriend) => {
+      return nonFriend.id !== user.id && !friendsId?.includes(nonFriend.id);
+    });
+    let result = nonFriends.map((nonFriend) => {
+      return {
+        ...nonFriend,
+        lcs: lcs(
+          user.musics,
+          nonFriend.musics,
+          user.musics.length,
+          nonFriend.musics.length,
+        ),
+      };
+    });
+    result = result.sort((a, b) => a.lcs - b.lcs).reverse();
+    result = result.slice(0, 4);
+    setUserSuggestion(result);
+  }, []);
 
   return (
     <Container>
@@ -52,17 +77,19 @@ const User: React.FC = () => {
               (com base nas músicas que você ouviu)
             </span>
           </Subtitle>
-          <Button>
-            <Subtitle>Seu Jorge</Subtitle>
-            <ButtonHeader
-              style={{ marginRight: 10 }}
-              onClick={(e) => {
-                handleAddFriend(e);
-              }}
-            >
-              <IoMdPersonAdd size={30} />
-            </ButtonHeader>
-          </Button>
+          {userSuggestion.map((suggestion) => (
+            <Button key={suggestion.id}>
+              <Subtitle>{suggestion.nome}</Subtitle>
+              <ButtonHeader
+                style={{ marginRight: 10 }}
+                onClick={(e) => {
+                  handleAddFriend(e);
+                }}
+              >
+                <IoMdPersonAdd size={30} />
+              </ButtonHeader>
+            </Button>
+          ))}
         </Sugestion>
         <Title>Suas musicas:</Title>
         {user?.musics.map((music) => (

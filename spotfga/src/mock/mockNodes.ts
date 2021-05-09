@@ -7,7 +7,7 @@ export const mockNodes = [
   {
     id: 2,
     nome: 'Murilo Gomes',
-    musics: ['I Wanna Love You', 'Gangnam Style'],
+    musics: ['Gangnam Style', 'I Wanna Love You'],
   },
   {
     id: 3,
