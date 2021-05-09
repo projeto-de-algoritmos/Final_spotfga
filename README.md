@@ -21,15 +21,22 @@ Os principais usos desses algorítmos foram:
 Essas e outras funcionalidades menores do projeto serão descritos abaixo das screenshots de cada tela.
 
 ## Screenshots e Uso
+
+<br>
+
 ![Tela Inicial](./img/inicial.png) <br> <br>
 
 Na tela inicial é possível alcançar a tela de usuários ou músicas clicando nos botões apresentados.
+
+<br>
 
 ![Página de usuários](./img/users.png) <br> <br>
 
 Na tela de usuários há uma listagem dos usuários cadastrados. Para facilitar o teste do projeto, já deixamos algumas informações cadastradas previamente em um mockup. Também é possível cadastrar novos usuários manualmente clicando no botão da barra de navegação superior da tela.
 
 Na listagem de usuários, é possível escolher um deles, clicando em seu nome, para ver seu perfil.
+
+<br>
 
 ![Página de usuário](./img/user.png) <br> <br>
 
@@ -48,6 +55,12 @@ Nessa página também é possível:
 * Adicionar uma nova música escutada (pelas sugestões ou buscando em todas as músicas cadastradas).
 
 **Ao adicionar um novo amigo ou escutar uma nova música, as sugestões serão recalculadas, mostrando sempre um resultado atualizado.**
+
+<br>
+
+![Página de músicas](./img/musics.png) <br> <br>
+
+Essa página só mostra a listagem das músicas cadastradas no site.
 
 ## Instalação 
 **Linguagem**: Typescript<br>
