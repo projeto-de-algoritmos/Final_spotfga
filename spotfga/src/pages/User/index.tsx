@@ -144,6 +144,7 @@ const User: React.FC = () => {
         ),
       };
     });
+    result = result.filter((value) => value.lcs > 0);
     result = result.sort((a, b) => a.lcs - b.lcs).reverse();
     result = result.slice(0, 4);
     setUserSuggestion(result);
